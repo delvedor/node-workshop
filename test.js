@@ -1,7 +1,7 @@
 'use strict'
 
 const test = require('tape')
-const point = require('./point')
+const point = require('./point')('test')
 const mongojs = require('mongojs')
 const db = mongojs('test', ['timeseries'])
 const mongoClean = require('mongo-clean')

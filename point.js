@@ -2,7 +2,7 @@
 const mongojs = require('mongojs')
 const Joi = require('Joi')
 
-const db = mongojs('test', ['timeseries'])
+let db
 const insertVal = Joi.object().keys({
   category: Joi.string().required(),
   time: Joi.date().required(),
@@ -50,6 +50,11 @@ function fetch (obj, callback) {
   })
 }
 
-module.exports.insert = insert
-module.exports.fetch = fetch
-
+module.exports = function build (dbName) {
+  dbName = dbName || 'test'
+  db = mongojs(dbName, ['timeseries'])
+  return {
+    insert: insert,
+    fetch: fetch
+  }
+}
