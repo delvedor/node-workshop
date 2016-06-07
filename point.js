@@ -20,8 +20,9 @@ function insert (obj, callback) {
     if (err) {
       callback(err, null)
     } else {
-      db.timeseries.insert(obj)
-      callback(null, 'ok!')
+      db.timeseries.insert(obj, function (err) {
+        callback(err || null, value || null)
+      })
     }
   })
 }

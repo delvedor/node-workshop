@@ -2,18 +2,21 @@
 
 const test = require('tape')
 const point = require('./point')
-// const mongojs = require('mongojs')
-// const db = mongojs('test', ['timeseries'])
+const mongojs = require('mongojs')
+const db = mongojs('test', ['timeseries'])
+const mongoClean = require('mongo-clean')
+mongoClean('mongodb://localhost:27017/test', function () {})
 
 test('insert', function (t) {
-  t.plan(3)
+  t.plan(6)
   t.is(typeof point.insert, 'function')
   // Correct insert
-  point.insert({
+  let obj = {
     category: 'prova',
     time: new Date(),
     data: {}
-  }, function callback (err, value) {
+  }
+  point.insert(obj, function callback (err, value) {
     if (err) {
       t.fail('insert error 1')
     } else {
@@ -31,6 +34,14 @@ test('insert', function (t) {
     } else {
       t.fail('insert error 2')
     }
+  })
+  // Test the insert
+  db.timeseries.findOne(function (err, value) {
+    if (err) t.fail('find fails')
+    t.equal(obj.category, value.category)
+    t.equal(obj.time.toISOString(), value.time.toISOString())
+    t.deepEqual(obj.data, value.data)
+    mongoClean('mongodb://localhost:27017/test', function () {})
   })
 })
 
