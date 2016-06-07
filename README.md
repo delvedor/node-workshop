@@ -4,10 +4,14 @@
 
 #### timeseries.insert  
 Insert a new datapoint,  
-returns a status object.
+returns a callback.
 
 Usage:  
-`timeseries.insert(object)`  
+```javascript
+timeseries.insert(object, function (err, value) {
+  if (err) console.log(err)
+})
+```  
 where object is:  
 ```javascript
 {
@@ -19,12 +23,16 @@ where object is:
 
 
 #### timeseries.fetch  
-Fetch all events between two dates (in ISO 8601 string)  
-returns a structured object with the result or an error.
+Fetch all events between two dates  
+returns a callback.
 
 
 Usage:  
-`timeseries.fetch(object)`  
+```javascript
+timeseries.fetch(object, function (err, value) {
+  if(err) console.log(err)
+})
+```  
 where object is:  
 ```javascript
 {
