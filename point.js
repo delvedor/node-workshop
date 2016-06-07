@@ -29,9 +29,24 @@ function insert (obj, callback) {
 
 // Fetch keys
 function fetch (obj, callback) {
-  Joi.vaidate(obj, fetchVal, function (err, value) {
-    if (err) console.log(err)
-    console.log(value)
+  Joi.validate(obj, fetchVal, function (err, value) {
+    if (err) {
+      callback(err, null)
+    } else {
+      db.timeseries.find({
+        category: obj.category,
+        time: {
+          '$lte': obj.to,
+          '$gte': obj.from
+        }
+      }, function (err1, documents) {
+        if (err1) {
+          callback(err1, null)
+        } else {
+          callback(null, documents)
+        }
+      })
+    }
   })
 }
 

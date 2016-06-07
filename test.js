@@ -41,12 +41,46 @@ test('insert', function (t) {
     t.equal(obj.category, value.category)
     t.equal(obj.time.toISOString(), value.time.toISOString())
     t.deepEqual(obj.data, value.data)
-    mongoClean('mongodb://localhost:27017/test', function () {})
   })
 })
 
 test('fetch', function (t) {
-  t.plan(1)
+  t.plan(3)
   t.is(typeof point.fetch, 'function')
+  let obj = {
+    category: 'prova',
+    time: new Date(),
+    data: {}
+  }
+  let find = {
+    category: 'prova',
+    from: obj.time,
+    to: obj.time
+  }
+  let findFalse = {
+    category: 'nope',
+    from: new Date(),
+    to: new Date()
+  }
+  point.insert(obj, function callback (err, value) {
+    if (err) console.log(err)
+    point.fetch(find, function (err1, documents) {
+      if (err1) {
+        t.fail('fetch fails')
+      } else {
+        t.pass('fetch ok!')
+      }
+    })
+  })
+  point.fetch(findFalse, function (err1, documents) {
+    if (err1) {
+      t.fail('fetch fail')
+    } else {
+      t.deepEqual(documents, [])
+    }
+  })
 })
 
+test.onFinish(function () {
+  mongoClean('mongodb://localhost:27017/test', function () {})
+})
