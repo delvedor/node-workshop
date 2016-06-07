@@ -1,11 +1,10 @@
 'use strict'
 
-const test = require('tape')
+const tap = require('tap')
+const test = tap.test
 const mongojs = require('mongojs')
 const db = mongojs('test', ['timeseries'])
 const mongoClean = require('mongo-clean')
-// Clean the db
-mongoClean('mongodb://localhost:27017/test', function () {})
 
 const point = require('./point')('test')
 
@@ -18,11 +17,7 @@ test('insert', function (t) {
     time: new Date(),
     data: {}
   }, function callback (err, value) {
-    if (err) {
-      t.pass('validator ok!')
-    } else {
-      t.fail('validator fails')
-    }
+    err ? t.pass('validator ok!') : t.fail('vailidator fails')
   })
   // Correct insert
   let obj = {
@@ -94,6 +89,22 @@ test('fetch', function (t) {
 })
 
 // Clean the db every time
-test.onFinish(function () {
-  mongoClean('mongodb://localhost:27017/test', function () {})
+tap.beforeEach(function (done) {
+  mongoClean('mongodb://localhost:27017/test', function (err, db) {
+    done(err)
+    if (db) {
+      db.close()
+    }
+  })
+})
+
+tap.tearDown(function () {
+  db.close()
+  mongoClean('mongodb://localhost:27017/test', function (err, db) {
+    if (err) {
+      throw err
+    }
+    point.close()
+    db.close()
+  })
 })

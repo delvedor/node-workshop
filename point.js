@@ -55,6 +55,7 @@ module.exports = function build (dbName) {
   db = mongojs(dbName, ['timeseries'])
   return {
     insert: insert,
-    fetch: fetch
+    fetch: fetch,
+    close: db.close.bind(db)
   }
 }
