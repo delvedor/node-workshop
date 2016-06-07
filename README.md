@@ -2,7 +2,7 @@
 
 ## API
 
-- timeseries.insert
+- timeseries.insert  
 Insert a new datapoint
 ```json
 {
@@ -11,10 +11,10 @@ Insert a new datapoint
   data: object
 }
 ```
-Usage:
-timeseries.insert(object)
+Usage:  
+`timeseries.insert(object)`
 
-- timeseries.fetch
+- timeseries.fetch  
 Fetch all events between two dates (in ISO 8601 string)
 ```json
 {
@@ -23,6 +23,5 @@ Fetch all events between two dates (in ISO 8601 string)
   to: Date
 }
 ```
-Usage:
-timeseries.fetch(object)
-
+Usage:  
+`timeseries.fetch(object)`
