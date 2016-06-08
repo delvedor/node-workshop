@@ -8,7 +8,7 @@ const mongoClean = require('mongo-clean')
 
 const point = require('./point')('test')
 
-test('insert', function (t) {
+test('insert', (t) => {
   t.plan(6)
   t.is(typeof point.insert, 'function')
   // test the validator
@@ -16,47 +16,46 @@ test('insert', function (t) {
     category: 42,
     time: new Date(),
     data: {}
-  }, function callback (err, value) {
+  }, (err, value) => {
     err ? t.pass('validator ok!') : t.fail('vailidator fails')
   })
   // Correct insert
   let obj = {
-    category: 'prova',
+    category: 'timetest',
     time: new Date(),
     data: {}
   }
-  point.insert(obj, function callback (err, value) {
-    if (err) {
-      t.fail('insert error 1')
-    } else {
-      t.pass('ok!')
-    }
+  point.insert(obj, (err, value) => {
+    err ? t.fail('insert error') : t.pass('insert ok!')
   })
   // Test the insert
-  db.timeseries.findOne(function (err, value) {
-    if (err) t.fail('find fails')
-    t.equal(obj.category, value.category)
-    t.equal(obj.time.toISOString(), value.time.toISOString())
-    t.deepEqual(obj.data, value.data)
+  db.timeseries.findOne((err, value) => {
+    if (err) {
+      t.fail('find fails')
+    } else {
+      t.equal(obj.category, value.category)
+      t.equal(obj.time.toISOString(), value.time.toISOString())
+      t.deepEqual(obj.data, value.data)
+    }
   })
 })
 
-test('fetch', function (t) {
+test('fetch', (t) => {
   t.plan(4)
   t.is(typeof point.fetch, 'function')
   // Test the validator
-  point.fetch({}, function callback (err, result) {
+  point.fetch({}, (err, result) => {
     err ? t.pass('validator ok!') : t.fail('vailidator fails')
   })
   // Object to insert
   let obj = {
-    category: 'prova',
+    category: 'timetest',
     time: new Date(),
     data: {}
   }
   // Object to find
   let find = {
-    category: 'prova',
+    category: 'timetest',
     from: obj.time,
     to: obj.time
   }
@@ -67,30 +66,25 @@ test('fetch', function (t) {
     to: new Date()
   }
   // Insert the object
-  point.insert(obj, function callback (err, value) {
-    if (err) console.log(err)
+  point.insert(obj, (err, value) => {
+    if (err) {
+      t.fail('fetch-test insert fails')
+      return
+    }
     // test fetch
-    point.fetch(find, function (err1, documents) {
-      if (err1) {
-        t.fail('fetch fails')
-      } else {
-        t.pass('fetch ok!')
-      }
+    point.fetch(find, (err1, documents) => {
+      err1 ? t.fail('fetch fails') : t.pass('fetch ok!')
     })
   })
   // test falsey
-  point.fetch(findFalse, function (err1, documents) {
-    if (err1) {
-      t.fail('fetch fail')
-    } else {
-      t.deepEqual(documents, [])
-    }
+  point.fetch(findFalse, (err1, documents) => {
+    err1 ? t.fail('fetch fails') : t.deepEqual(documents, [])
   })
 })
 
 // Clean the db every time
-tap.beforeEach(function (done) {
-  mongoClean('mongodb://localhost:27017/test', function (err, db) {
+tap.beforeEach((done) => {
+  mongoClean('mongodb://localhost:27017/test', (err, db) => {
     done(err)
     if (db) {
       db.close()
@@ -98,9 +92,9 @@ tap.beforeEach(function (done) {
   })
 })
 
-tap.tearDown(function () {
+tap.tearDown(() => {
   db.close()
-  mongoClean('mongodb://localhost:27017/test', function (err, db) {
+  mongoClean('mongodb://localhost:27017/test', (err, db) => {
     if (err) {
       throw err
     }

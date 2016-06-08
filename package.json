@@ -2,7 +2,7 @@
   "name": "point",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "point.js",
   "scripts": {
     "test": "npm run lint; node test.js",
     "lint": "standard"

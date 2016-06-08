@@ -2,7 +2,7 @@
 const mongojs = require('mongojs')
 const Joi = require('Joi')
 
-let db
+let db = null
 const insertVal = Joi.object().keys({
   category: Joi.string().required(),
   time: Joi.date().required(),
@@ -16,12 +16,12 @@ const fetchVal = Joi.object().keys({
 
 // Insert a key
 function insert (obj, callback) {
-  Joi.validate(obj, insertVal, function (err, value) {
+  Joi.validate(obj, insertVal, (err, value) => {
     if (err) {
       callback(err, null)
     } else {
-      db.timeseries.insert(obj, function (err) {
-        callback(err || null, value || null)
+      db.timeseries.insert(obj, (err1) => {
+        callback(err1 || null, value || null)
       })
     }
   })
@@ -29,7 +29,7 @@ function insert (obj, callback) {
 
 // Fetch keys
 function fetch (obj, callback) {
-  Joi.validate(obj, fetchVal, function (err, value) {
+  Joi.validate(obj, fetchVal, (err, value) => {
     if (err) {
       callback(err, null)
     } else {
@@ -39,12 +39,8 @@ function fetch (obj, callback) {
           '$lte': obj.to,
           '$gte': obj.from
         }
-      }, function (err1, documents) {
-        if (err1) {
-          callback(err1, null)
-        } else {
-          callback(null, documents)
-        }
+      }, (err1, documents) => {
+        callback(err1 || null, documents || null)
       })
     }
   })
