@@ -9,16 +9,8 @@ const mongoClean = require('mongo-clean')
 const point = require('./point')('test')
 
 test('insert', (t) => {
-  t.plan(6)
+  t.plan(5)
   t.is(typeof point.insert, 'function')
-  // test the validator
-  point.insert({
-    category: 42,
-    time: new Date(),
-    data: {}
-  }, (err, value) => {
-    err ? t.pass('validator ok!') : t.fail('vailidator fails')
-  })
   // Correct insert
   let obj = {
     category: 'timetest',
@@ -41,12 +33,8 @@ test('insert', (t) => {
 })
 
 test('fetch', (t) => {
-  t.plan(4)
+  t.plan(3)
   t.is(typeof point.fetch, 'function')
-  // Test the validator
-  point.fetch({}, (err, result) => {
-    err ? t.pass('validator ok!') : t.fail('vailidator fails')
-  })
   // Object to insert
   let obj = {
     category: 'timetest',
